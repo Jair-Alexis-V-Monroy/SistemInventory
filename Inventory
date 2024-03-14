@@ -1,0 +1,73 @@
+class Producto:
+    def __init__(self, nombre, precio, stock):
+        self.nombre = nombre
+        self.precio = precio
+        self.stock = stock
+
+    def actualizar_stock(self, cantidad):
+        self.stock -= cantidad
+
+class PuntoDeVenta:
+    def __init__(self):
+        self.productos = []
+
+    def agregar_producto(self, producto):
+        self.productos.append(producto)
+
+    def vender_producto(self, nombre, cantidad):
+        for producto in self.productos:
+            if producto.nombre == nombre:
+                if producto.stock >= cantidad:
+                    producto.actualizar_stock(cantidad)
+                    return producto.precio * cantidad
+                else:
+                    return f"No hay suficiente stock de {nombre}"
+        return f"{nombre} no encontrado"
+
+    def mostrar_stock(self):
+        print("Stock disponible:")
+        for producto in self.productos:
+            print(f"{producto.nombre}: {producto.stock}")
+
+def main():
+    punto_venta = PuntoDeVenta()
+
+    # Agregar productos al punto de venta
+    punto_venta.agregar_producto(Producto("Camiseta", 20.0, 50))
+    punto_venta.agregar_producto(Producto("Pantalón", 30.0, 30))
+    punto_venta.agregar_producto(Producto("Zapatos", 50.0, 20))
+    punto_venta.agregar_producto(Producto("Caja", 20.0, 15))
+
+    while True:
+        print("\n--- Menú ---")
+        print("1. Vender producto")
+        print("2. Mostrar stock")
+        print("3. Agregar producto")
+        print("4. Salir")
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            nombre_producto = input("Ingrese el nombre del producto a vender: ")
+            cantidad = int(input("Ingrese la cantidad a vender: "))
+            total = punto_venta.vender_producto(nombre_producto, cantidad)
+            if isinstance(total, str):
+                print(total)
+            else:
+                print(f"Venta realizada. Total a pagar: ${total:.2f}")
+        elif opcion == "2":
+            punto_venta.mostrar_stock()
+        elif opcion == "3":
+            nombre_producto = input("Ingrese el nombre del producto: ")
+            precio_producto = float(input("Ingrese el precio del producto: "))
+            stock_producto = int(input("Ingrese el stock inicial del producto: "))
+            nuevo_producto = Producto(nombre_producto, precio_producto, stock_producto)
+            punto_venta.agregar_producto(nuevo_producto)
+            print(f"Producto {nombre_producto} agregado correctamente.")
+        elif opcion == "4":
+            print("¡Hasta luego!")
+            break
+        else:
+            print("Opción inválida. Por favor, seleccione una opción válida.")
+
+if __name__ == "__main__":
+    main()
